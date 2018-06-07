@@ -48,7 +48,7 @@ class User(Base, UserMixin):
                                 backref='users')
     detail = db.relationship("Company", uselist=False)
     # 该处是否可以使用外键
-    company_id = db.Column(db.Integer)
+    #company_id = db.Column(db.Integer)
     # 暂时先用简历地址代替简历存储
     resume_url = db.Column(db.String(64))
 
@@ -91,7 +91,6 @@ class Company(Base):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), nullable=False, unique=True, index=True)
     email = db.Column(db.String(64), unique=True, index=True, nullable=False)
-    _password = db.Column('password', db.String(128), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id", ondelete="SET NULL"))
     user = db.relationship("User", uselist=False, backref=db.backref("company_detail", uselist=False))
     website = db.Column(db.String(64), nullable=True)
@@ -132,17 +131,20 @@ class Job(Base):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), nullable=False, index=True)
-    salary_low = db.Column(db.Integer, nullable=False)
-    salary_high = db.Column(db.Integer, nullable=False)
+    salary_low = db.Column(db.Integer)
+    salary_high = db.Column(db.Integer)
     # 工作详情页对工作需求的描述 
+    #salary_high = db.Column(db.Integer, nullable=False)
     description = db.Column(db.Text)
     # 工作待遇 
     treatment = db.Column(db.Text)
     # 经验要求
-    exp = db.Column(db.String(64), default="经验不限", nullable=False)
+    exp = db.Column(db.String(64), default="经验不限")
     # 学历要求
-    degree = db.Column(db.String(64), nullable=False)
+    #exp = db.Column(db.String(64), default="经验不限", nullable=False)
+    degree = db.Column(db.String(64))
     # 技术栈
+    #degree = db.Column(db.String(64), nullable=False)
     stacks = db.Column(db.String(128))
     # 工作地点
     location = db.Column(db.String(24))

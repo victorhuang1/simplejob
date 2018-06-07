@@ -11,7 +11,7 @@ fake = Faker()
 # 生成企业用户
 def iter_users():
     yield Company(
-            name = '测试 Company',
+            name = 'TestCompany',
             email = 'Company@test.com',
             website = 'www.test.com',
             password = '123456',
@@ -27,28 +27,30 @@ def iter_users():
     '''
 
 def iter_job():
-    company = Job.query.filter_by(name = '测试账户').first()
-    with open(os.path.join(os.path.dirname(__file__), '..', 'datas', 'job_detail.json')) as f:
-        for line in f.readlines():
-            job = json.loads(line)
-        # for job in jobs:
+    company = Job.query.filter_by(name = 'TestCompany').first()
+    with open(os.path.join(os.path.dirname(__file__), '..', 'datas', 'job.json')) as f:
+        course = json.load(f)
+        #for line in f.readlines():
+           # job = json.loads(line)
+        for job in jobs:
             yield Job(
                     name = job['name'],
                     salary = job['salary'],
                     address = job['address'],
-                    exp = job['exp'],
-                    degree = job['degree'],
-                    description = job['description']
+                    company = company
+                    #exp = job['exp'],
+                    #degree = job['degree'],
+                    #description = job['description']
                     )
 
 def run():
     for user in iter_users():
         db.session.add(user)
-
-    '''
+                   
+    
     for job in iter_job():
         db.session.add(job)
-    '''
+    
 
     try:
         db.session.commit()
