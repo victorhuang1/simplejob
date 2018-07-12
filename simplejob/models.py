@@ -37,7 +37,7 @@ class User(Base, UserMixin):
     ROLE_ADMIN = 30
 
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(32), unique=True, index=True, nullable=True)
+    username = db.Column(db.String(32), unique=True, index=True, nullable=False)
     _password = db.Column('password', db.String(128), nullable=False)
     phone = db.Column(db.String(18), unique=True, index=True, nullable=True)
     is_enable = db.Column(db.Boolean, default=True)
@@ -47,10 +47,11 @@ class User(Base, UserMixin):
                                 secondary=jobhunter_job,
                                 backref='users')
     detail = db.relationship("Company", uselist=False)
+    #detail = db.relationship("Company")
     # 该处是否可以使用外键
     #company_id = db.Column(db.Integer)
     # 暂时先用简历地址代替简历存储
-    resume_url = db.Column(db.String(64))
+    #resume_url = db.Column(db.String(64))
 
     def __repr__(self):
         return '<User: {}>'.format(self.username)
@@ -77,22 +78,23 @@ class User(Base, UserMixin):
     @property
     def is_jobhunter(self):
         return self.role == self.ROLE_JOBHUNTER
-
+    
     @property
     def is_enable_jobs(self):
         if not self.is_company:
             raise AttributeError("User类缺少is_enable_jobs属性")
         return self.jobs.filter(Job.is_enable.is_(True))
-
+    
 
 class Company(Base):
     __tablename__ = 'company'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64), nullable=False, unique=True, index=True)
+    name = db.Column(db.String(64), nullable=False, index=True)
     email = db.Column(db.String(64), unique=True, index=True, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id", ondelete="SET NULL"))
     user = db.relationship("User", uselist=False, backref=db.backref("company_detail", uselist=False))
+    #user = db.relationship("User", backref=db.backref("company_detail", uselist=False))
     website = db.Column(db.String(64), nullable=True)
     address = db.Column(db.String(64), nullable=True)
     logo = db.Column(db.String(256))
@@ -108,8 +110,8 @@ class Company(Base):
     company_info = db.Column(db.Text)
 
     def __repr__(self):
-        return '<Company: {}'.format(self.name)
-
+        return '<Company: {}>'.format(self.name)
+    '''
     @property
     def password(self):
         return self._password
@@ -120,7 +122,7 @@ class Company(Base):
 
     def check_password(self, password):
         return check_password_hash(self._password, password)
-
+    '''
     @property
     def tag_list(self):
         return self.tags.split(",")
@@ -154,12 +156,13 @@ class Job(Base):
     tags = db.Column(db.String(128))
     company_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
     company = db.relationship('User', uselist=False, backref=db.backref('jobs', lazy='dynamic'))
+    #company = db.relationship('User', backref=db.backref('jobs', lazy='dynamic'))
     # 职位上线
     is_enable = db.Column(db.Boolean, default=True)
 
 
     def __repr__(self):
-        return '<Job: {}'.format(self.name)
+        return '<Job: {}>'.format(self.name)
 
     @property
     def url(self):
