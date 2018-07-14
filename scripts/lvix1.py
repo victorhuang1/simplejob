@@ -166,7 +166,8 @@ def iter_jobs(companies):
             #location = job['address'],
             location = fake_cn.city(),
             #company = user
-            company_id = company.company_info.id
+            company = company
+            #company_id = company.company_info.id
             )
 
 
