@@ -51,7 +51,7 @@ class User(Base, UserMixin):
     # 该处是否可以使用外键
     #company_id = db.Column(db.Integer)
     # 暂时先用简历地址代替简历存储
-    #resume_url = db.Column(db.String(64))
+    resume_url = db.Column(db.String(64))
 
     def __repr__(self):
         return '<User: {}>'.format(self.username)
